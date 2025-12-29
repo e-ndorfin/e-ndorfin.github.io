@@ -1,0 +1,29 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+const projects = await getCollection('projects');
+projects.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<Layout title="Projects">
+  <h1 class="text-3xl font-bold text-white mb-8">Projects</h1>
+  <div class="grid gap-6">
+    {projects.map((project) => (
+      <div class="group py-4">
+        <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-2">
+            <h2 class="text-xl font-bold text-theme-text transition-colors">
+                {project.data.title}
+            </h2>
+             {/* Optional: Display date or tags here if needed */}
+        </div>
+        <p class="text-gray-400 leading-relaxed max-w-xl">{project.data.description}</p>
+        {project.data.link && (
+          <a href={project.data.link} target="_blank" rel="noopener noreferrer" class="inline-block mt-3 text-sm text-theme-accent hover:underline decoration-theme-accent/50 underline-offset-4">
+            View Project &rarr;
+          </a>
+        )}
+      </div>
+    ))}
+  </div>
+</Layout>
