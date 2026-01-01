@@ -1,8 +1,8 @@
 ---
 title: 'Flow Matching'
-draft: true
-description: 'Hi'
-pubDate: 'Dec 31 2025'
+draft: false
+description: 'A brief introduction to flow matching.'
+pubDate: 'Jan 1 2026'
 ---
 import { Image } from 'astro:assets';
 import flowMatchingViz from '../../assets/flow-matching/flow-matching-viz.png';
@@ -10,14 +10,14 @@ import probabilityPath from '../../assets/flow-matching/probability-path.png';
 import vectorFields from '../../assets/flow-matching/vector-field.png'
 
 ### Introduction 
-Flow matching is a fundamental algorithm used in state-of-the-art image generation models as well as VLA (vision-language-action) models in robotics. In particular, $\pi_{0.5}$ (Physical Intelligence Team., 2025, https://www.pi.website/download/pi05.pdf) and X-VLA (Zheng et. al., 2025, https://arxiv.org/pdf/2510.10274) are notable high-performing examples of successful flow matching used in robotic manipulation.
+Flow matching is a fundamental algorithm used in state-of-the-art image generation models as well as VLA (vision-language-action) models in robotics. In particular, $\pi_{0.5}$ ([Physical Intelligence, 2025](https://www.pi.website/download/pi05.pdf)) and X-VLA ([Zheng et. al., 2025](https://arxiv.org/pdf/2510.10274)) are notable high-performing examples of successful flow matching used in robotic manipulation.
 
-This blog post will be a short delve into the mathematical derivations behind flow matching, aiming to serve as a fleshed-out and condensed version of many excellent existing resources explaining the algorithm.
+I thought it would be interesting to dive into the mathematical derivations behind algorithm, standing on the shoulders of many excellent existing resources explaining it :)
 
 ### What is Flow Matching? 
 The aim of flow matching is to **generate a sample from an unknown probability distribution**. 
 
-For example, let's consider an image generation model. Say we have a dataset of 50 cat pictures and we want to generate another picture. The unknown probability distribution here is the distribution containing all pictures of cats (in which our dataset is a subset of), as it's impossible to generate all possible cat pictures in existence. We want to sample from this unknown probability distribution to **generate a picture that is distinct to the ones in the dataset, but one that we would still classify as a cat**. 
+For example, let's consider an image generation model. Say we have a dataset of 50 cat pictures and we want to generate another picture. The unknown probability distribution here is the mathematical function describing the likelihood of all cat pictures. We cannot know this function directly; we only have samples (our dataset). We want to sample from this unknown probability distribution to **generate a picture that is distinct to the ones in the dataset, but one that we would still classify as a cat**. 
 
 <div class="flex flex-col items-center">
   <Image src={flowMatchingViz} alt="Flow matching visualization: Blue distribution represents cat pictures, black dots are limited dataset. An orange arrow shows generating a new sample." class="my-0 w-full" />
@@ -28,11 +28,11 @@ How might we accomplish this? Flow matching proposes we build a path translating
 
 It's sort of like a treasure map. It tells you where to go from where you started, and if you dig around the target, you're bound to find treasure. 
 
-Let's call the unknown target distribution $X_1$, and the known distribution $X_0$, where $X_0 = \mathcal{N}(0, 1^2)$. Let's set it such that at time $t=0$, $x \sim X_0$, at $t=1$, $x_1 = x \sim X_1$, so as we move forward in time we move closer and closer to the target distribution. 
+Let's call the unknown target distribution $X_1$, and the known distribution $X_0$, where $X_0 = \mathcal{N}(0, I)$. Let's set it such that at time $t=0$, $x \sim X_0$, at $t=1$, $x_1 = x \sim X_1$, so as we move forward in time we move closer and closer to the target distribution. 
 
 <div class="flex flex-col items-center">
   <Image src={probabilityPath} alt="Probability path visualization: Shows a path from a known distribution to an unknown target distribution." class="my-0 w-full" />
-  <p class="text-center mt-2 text-sm text-gray-500"><em>$p$ is known, $q$ is target, $p_t$ is our path (Lipman et. al., 2024, https://ai.meta.com/research/publications/flow-matching-guide-and-code/)</em></p>
+  <p class="text-center mt-2 text-sm text-gray-500"><em>$p$ is known, $q$ is target, $p_t$ is our path ([Lipman et. al., 2024](https://ai.meta.com/research/publications/flow-matching-guide-and-code/))</em></p>
 </div> 
 
 Now let's construct a probability path $p_t(x)$ that fulfills these requirements. 
@@ -107,7 +107,7 @@ For this vector field specifically, let's define $u_t$ such that it creates the 
 
 This is an important enough concept to reiterate. A vector field dictates which way the point moves at a given time step. The flow represents the path a particle takes, given a starting location and what time step we're at. The probability path represents the density of those particles. 
 
-(I'd recommend watching 3Blue1Brown's video on this - his visualizations are extremely helpful https://www.youtube.com/watch?v=rB83DpBJQsE)
+(I'd recommend watching 3Blue1Brown's [video](https://www.youtube.com/watch?v=rB83DpBJQsE) on this - his visualizations are extremely helpful)
 
 Now we finally have the function we wanted! A vector field tells us how to move from a point in $X_0$ to a point in $X_1$. If we're able to learn the correct vector field, we can generate any photo from our target distribution. 
 
@@ -125,7 +125,7 @@ Unfortunately, calculating this loss function is intractable.
 
 Let's first show why it's intractable by deriving an equation for $u_t$. 
 
-You'll notice that I began talking about particles rather than points, as some physics students may recognize this as fluid dynamics. Fluid dynamics theory further tells us that through the Continuity Equation,
+You'll notice that I began talking about particles rather than points: some students of physics may recognize this as fluid dynamics. Fluid dynamics theory further tells us that through the Continuity Equation,
 
 $$
 \begin{equation}
@@ -140,7 +140,7 @@ $$
 $$
 where x is a single point. 
 
-Multiplying $p_t(x)$ and $v_t(x)$ gives us the **flux**, as $p_t(x)$ represents the density at a point and $v_t(x)$ represents the velocity of that point. Thinking about this in terms of liquids and a hose, 
+Multiplying $p_t(x)$ and $u_t(x)$ gives us the probability current (or **flux**), as $p_t(x)$ represents the density at a point and $u_t(x)$ represents the velocity of that point. Thinking about this in terms of liquids and a hose, 
 - low density and high velocity => medium amount of water coming out
 - high density low velocity => medium amount of water coming out
 - high density high velocity => high amount of water coming out 
@@ -200,7 +200,7 @@ X_{t|1} = tx_1 + (1-t)X_0 \sim p_{t|1}(x_1) = \mathcal{N}(tx_1, (1-t)^2 I)
 \end{equation}
 $$
 
-In this case, rearranging the identity $\frac{d}{dt}X_{t|1} = u_t(X_{t|1} | x_1)$ yields 
+In this case, rearranging the identity $\frac{d}{dt}X_{t|1} = u_t(X_{t|1} | x_1)$ by differentiating Equation 14 yields
 
 $$
 \begin{equation}
@@ -223,7 +223,7 @@ $$
 
 At a high level, we are just stating to match a vector field that results in a **linear path** pointing from $X_0$ to $x_1$. Does this work? Finding the derivative of our earlier loss function $\mathcal{L}_{FM} \theta$ and this one will yield the same result, showing they are equivalent! 
 
-We can see this in example flow matching code (Lipman et. al., 2024):
+We can see this in example flow matching code ([Lipman et. al., 2024](https://ai.meta.com/research/publications/flow-matching-guide-and-code/)):
 ```python
 import torch 
 from torch import nn, Tensor
@@ -247,6 +247,14 @@ loss_fn = nn.MSELoss()
 dx_t = x_1 - x_0  
 
 # Find MSE between u^theta_t(x_t) and x_1 - x_0!
+# Note that x_t represents the coordinates of the point while t is a float between [0, 1] representative of the time
 loss_fn(flow(x_t, t), dx_t).backward()
 ```
 
+<hr></hr>
+
+I'll leave the post there - maybe I'll write more later on. Further reading would include various ODE solvers, score-based generative modeling, and diffusion models!
+
+Resources that greatly helped me: 
+- https://ai.meta.com/research/publications/flow-matching-guide-and-code/
+- https://diffusion.csail.mit.edu/2025/index.html
