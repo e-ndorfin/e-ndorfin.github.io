@@ -23,3 +23,5 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 \n# private documentation\nPLAN.md\nREADME.md
+
+_drafts/

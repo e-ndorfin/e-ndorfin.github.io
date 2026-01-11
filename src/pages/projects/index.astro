@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import Layout from '../../layouts/Layout.astro';
 
 const projects = await getCollection('projects');
@@ -18,6 +19,15 @@ projects.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
              {/* Optional: Display date or tags here if needed */}
         </div>
         <p class="text-gray-400 leading-relaxed max-w-xl">{project.data.description}</p>
+        {project.data.image && (
+          <Image 
+            src={project.data.image} 
+            alt={project.data.title}
+            class="mt-4 rounded-lg border border-gray-700/50 shadow-lg max-w-full h-auto"
+            width={800}
+            height={600}
+          />
+        )}
         {project.data.link && (
           <a href={project.data.link} target="_blank" rel="noopener noreferrer" class="inline-block mt-3 text-sm text-theme-accent hover:underline decoration-theme-accent/50 underline-offset-4">
             View Project &rarr;
