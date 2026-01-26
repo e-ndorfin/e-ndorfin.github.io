@@ -1,9 +1,10 @@
 ---
 title: 'Heimer Academy'
-description: '🏆 1st Place Winner ($10,000 USD) at AWS x Riot Games global hackathon - AI-powered League of Legends coaching platform that provides personalized champion recommendations and match analysis'
+description: '🏆 <span class="font-bold text-white">1st Place Winner ($10,000 USD) at AWS x Riot Games global hackathon</span> - AI-powered League of Legends coaching platform that provides personalized champion recommendations and match analysis'
 pubDate: '2025-11-10'
 link: 'https://devpost.com/software/idk-evraiq'
-image: ../../assets/heimer-academy.png
+images:
+  - ../../assets/heimer-academy.png
 ---
 
 Built for Rift Rewind Hackathon with a team of 4. An AI-powered League of Legends coaching platform that analyzes player gameplay to provide personalized champion recommendations and actionable feedback.

@@ -18,15 +18,65 @@ projects.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
             </h2>
              {/* Optional: Display date or tags here if needed */}
         </div>
-        <p class="text-gray-400 leading-relaxed max-w-xl">{project.data.description}</p>
-        {project.data.image && (
-          <Image 
-            src={project.data.image} 
-            alt={project.data.title}
-            class="mt-4 rounded-lg border border-gray-700/50 shadow-lg max-w-full h-auto"
-            width={800}
-            height={600}
-          />
+        <p class="text-gray-400 leading-relaxed max-w-xl" set:html={project.data.description} />
+        {project.data.images && project.data.images.length > 0 && (
+          <div class="relative mt-4 slideshow-container">
+            <div class="relative overflow-hidden rounded-lg border border-gray-700/50 shadow-lg aspect-video bg-gray-900">
+              {project.data.images.map((img, index) => (
+                <div
+                  class={`slide ${index === 0 ? 'block' : 'hidden'}`}
+                  data-slide-index={index}
+                >
+                  <Image
+                    src={img}
+                    alt={`${project.data.title} - Screenshot ${index + 1}`}
+                    class="w-full h-full object-cover"
+                    width={800}
+                    height={600}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {project.data.images.length > 1 && (
+              <>
+                {/* Dots navigation */}
+                <div class="flex justify-center mt-3 gap-2">
+                  {project.data.images.map((_, index) => (
+                    <button
+                      class={`w-2 h-2 rounded-full transition-colors ${
+                        index === 0
+                          ? 'bg-theme-accent'
+                          : 'bg-gray-600 hover:bg-gray-500'
+                      }`}
+                      data-slide-dot={index}
+                      aria-label={`Go to slide ${index + 1}`}
+                    />
+                  ))}
+                </div>
+
+                {/* Arrow navigation */}
+                <button
+                  class={`absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors ${project.data.images.length === 1 ? 'hidden' : 'block'}`}
+                  data-slide-prev
+                  aria-label="Previous slide"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                  </svg>
+                </button>
+                <button
+                  class={`absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors ${project.data.images.length === 1 ? 'hidden' : 'block'}`}
+                  data-slide-next
+                  aria-label="Next slide"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                  </svg>
+                </button>
+              </>
+            )}
+          </div>
         )}
         {project.data.link && (
           <a href={project.data.link} target="_blank" rel="noopener noreferrer" class="inline-block mt-3 text-sm text-theme-accent hover:underline decoration-theme-accent/50 underline-offset-4">
@@ -37,3 +87,84 @@ projects.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
     ))}
   </div>
 </Layout>
+
+<script>
+// Slideshow functionality
+function initSlideshows() {
+  const slideshows = document.querySelectorAll('.slideshow-container');
+
+  slideshows.forEach(container => {
+    const slides = container.querySelectorAll('.slide');
+    const dots = container.querySelectorAll('[data-slide-dot]');
+    const prevBtn = container.querySelector('[data-slide-prev]');
+    const nextBtn = container.querySelector('[data-slide-next]');
+
+    if (slides.length <= 1) return;
+
+    let currentIndex = 0;
+
+    // Set initial button state
+    updateButtons();
+
+    function updateButtons() {
+      if (prevBtn) {
+        if (currentIndex === 0) {
+          prevBtn.classList.add('hidden');
+          prevBtn.classList.remove('block');
+        } else {
+          prevBtn.classList.add('block');
+          prevBtn.classList.remove('hidden');
+        }
+      }
+      if (nextBtn) {
+        if (currentIndex === slides.length - 1) {
+          nextBtn.classList.add('hidden');
+          nextBtn.classList.remove('block');
+        } else {
+          nextBtn.classList.add('block');
+          nextBtn.classList.remove('hidden');
+        }
+      }
+    }
+
+    function showSlide(index: number) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('hidden', i !== index);
+        slide.classList.toggle('block', i === index);
+      });
+
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('bg-theme-accent', i === index);
+        dot.classList.toggle('bg-gray-600', i !== index);
+        dot.classList.toggle('hover:bg-gray-500', i !== index);
+      });
+
+      currentIndex = index;
+      updateButtons();
+    }
+
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => showSlide(index));
+    });
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        if (currentIndex > 0) {
+          showSlide(currentIndex - 1);
+        }
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        if (currentIndex < slides.length - 1) {
+          showSlide(currentIndex + 1);
+        }
+      });
+    }
+  });
+}
+
+// Initialize on DOM ready
+document.addEventListener('DOMContentLoaded', initSlideshows);
+</script>
