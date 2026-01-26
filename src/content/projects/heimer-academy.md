@@ -1,6 +1,6 @@
 ---
 title: 'Heimer Academy'
-description: '🏆 <span class="font-bold text-white">1st Place Winner ($10,000 USD) at AWS x Riot Games global hackathon</span> - AI-powered League of Legends coaching platform that provides personalized champion recommendations and match analysis'
+description: '🏆 <span class="font-bold text-white">1st Place Winner ($10,000 USD) at AWS x Riot Games global hackathon</span> - League of Legends coaching platform that provides personalized champion recommendations via pairwise ability comparisons and graph analysis.<br><br>Technologies: React, Vite, Supabase, NetworkX, Matplotlib, Seaborn'
 pubDate: '2025-11-10'
 link: 'https://devpost.com/software/idk-evraiq'
 images:

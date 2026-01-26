@@ -1,6 +1,6 @@
 ---
 title: 'Identity Matrix'
-description: '🏆 <span class="font-bold text-white">1st Place Winner at UofTHacks 13</span> - Real-time multiplayer simulation where AI avatars continue acting as autonomous agents after users log off, mimicking their personality, communication style, and memories'
+description: '🏆 <span class="font-bold text-white">1st Place Winner at UofTHacks 13</span> - Real-time multiplayer simulation where AI avatars continue acting as autonomous agents after users log off, mimicking their personality, communication style, and memories.<br><br>Technologies: React, Vite, FastAPI, Phaser, Supabase'
 pubDate: '2026-01-25'
 link: 'https://devpost.com/software/temp-sqyptg'
 images:
