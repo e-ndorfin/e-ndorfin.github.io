@@ -78,11 +78,18 @@ projects.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
             )}
           </div>
         )}
-        {project.data.link && (
-          <a href={project.data.link} target="_blank" rel="noopener noreferrer" class="inline-block mt-3 text-sm text-theme-accent hover:underline decoration-theme-accent/50 underline-offset-4">
-            View Project &rarr;
-          </a>
-        )}
+        <div class="flex gap-4 mt-3">
+          {project.data.link && (
+            <a href={project.data.link} target="_blank" rel="noopener noreferrer" class="text-sm text-theme-accent hover:underline decoration-theme-accent/50 underline-offset-4">
+              View Project &rarr;
+            </a>
+          )}
+          {project.data.github && (
+            <a href={project.data.github} target="_blank" rel="noopener noreferrer" class="text-sm text-theme-accent hover:underline decoration-theme-accent/50 underline-offset-4">
+              View GitHub &rarr;
+            </a>
+          )}
+        </div>
       </div>
     ))}
   </div>
