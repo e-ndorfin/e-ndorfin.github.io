@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PR #20: From expiring orders to an active recipe</title>
+  <style>
+    :root{--bg:#fbfaf7;--ink:#1f2430;--muted:#5d6675;--rule:#e2ded4;--accent:#b3541e;--accent-soft:#fdf0e6;--code-bg:#f3f0e9;--good:#2f7a4d;--good-soft:#edf7f0;--bad:#b3252d;--bad-soft:#fbecee;--blue:#3d647d;--blue-soft:#edf3f7;--violet:#6b5689}
+    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--bg);color:var(--ink);font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-size:18px;line-height:1.62}.wrap{max-width:820px;margin:0 auto;padding:3rem 1.25rem 6rem}h1{font-size:2.1rem;line-height:1.2;margin:.35rem 0 1rem;font-weight:650}h2{font-size:1.55rem;line-height:1.3;margin:3.2rem 0 1rem;padding-top:1.4rem;border-top:1px solid var(--rule)}h3{font-size:1.15rem;margin:2rem 0 .6rem}p{margin:1rem 0}.eyebrow,.meta,.toc,.caption,table,.diagram,.quiz,.callout-label{font-family:ui-sans-serif,system-ui,sans-serif}.eyebrow,.callout-label{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}.lede{font-size:1.18rem;color:var(--muted);max-width:45rem}.meta{font-size:.82rem;color:var(--muted);padding:.65rem 0;border-bottom:1px solid var(--rule)}a{color:var(--accent);text-underline-offset:3px}.toc{background:#fff;border:1px solid var(--rule);border-radius:6px;padding:1rem 1.1rem;margin:2rem 0}.toc ol{margin:.45rem 0 0;padding-left:1.3rem}.toc li{margin:.2rem 0}.callout{background:#fff;border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:5px;padding:.85rem 1rem;margin:1.35rem 0}.callout.warn{background:var(--accent-soft)}code,pre,.mono{font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace}code{font-size:.87em;background:var(--code-bg);padding:.08em .25em;border-radius:3px}pre{white-space:pre-wrap;overflow:auto;background:var(--code-bg);border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:4px;padding:1rem;font-size:.82rem;line-height:1.55}pre code{padding:0;background:none}.compare{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);margin:1.4rem 0}.compare>div{padding:1rem}.compare>div+div{border-left:1px solid var(--rule)}.compare h4,.node h4{font:700 .72rem/1.3 ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 .5rem}.compare ul{margin:.4rem 0;padding-left:1.1rem}.flow{display:flex;align-items:stretch;gap:.45rem;margin:1.5rem 0}.node{flex:1;min-width:0;border:1px solid var(--rule);background:#fff;border-radius:4px;padding:.7rem;font-family:ui-sans-serif,system-ui,sans-serif;font-size:.79rem}.node strong{display:block;color:var(--blue);margin-bottom:.25rem}.arrow{display:flex;align-items:center;color:var(--accent);font-family:ui-sans-serif,system-ui,sans-serif;font-weight:700}.caption{font-size:.78rem;color:var(--muted);margin-top:-.8rem}table{width:100%;border-collapse:collapse;font-size:.84rem;margin:1rem 0}th{text-align:left;font-size:.69rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--ink);padding:.5rem .4rem}td{vertical-align:top;border-bottom:1px solid var(--rule);padding:.6rem .4rem}.status{font-weight:700;color:var(--bad)}.quiz-card{background:#fff;border:1px solid var(--rule);border-radius:6px;padding:1rem;margin:1rem 0}.quiz-card h3{font-family:ui-sans-serif,system-ui,sans-serif;font-size:.98rem;margin:0 0 .8rem}.options{display:grid;gap:.45rem}.option{width:100%;text-align:left;background:#fff;color:var(--ink);border:1px solid var(--rule);border-radius:4px;padding:.62rem .7rem;font:inherit;cursor:pointer}.option:hover{border-color:#b9b2a5}.option:focus-visible{outline:3px solid #e2a77f;outline-offset:2px}.option.selected{border-width:2px}.option.correct{border-color:var(--good)}.option.incorrect{border-color:var(--bad)}.feedback{display:none;margin-top:.7rem;padding:.65rem .75rem;border-radius:4px;font-size:.86rem}.feedback.show{display:block}.feedback.good{background:var(--good-soft);border:1px solid #a7cfb4}.feedback.bad{background:var(--bad-soft);border:1px solid #e0a9ad}.footnote{font-size:.85rem;color:var(--muted);border-top:1px solid var(--rule);margin-top:3rem;padding-top:1rem}
+    @media(max-width:650px){body{font-size:17px}.wrap{padding:2rem 1rem 4rem}h1{font-size:1.7rem}.compare{grid-template-columns:1fr}.compare>div+div{border-left:0;border-top:1px solid var(--rule)}.flow{flex-direction:column}.arrow{justify-content:center;transform:rotate(90deg)}}
+  </style>
+</head>
+<body><main class="wrap">
+  <div class="eyebrow">JaxMARL · Pull request #20</div>
+  <h1>From expiring orders to one active recipe</h1>
+  <p class="lede">PR #20 reshapes Overcooked V3’s recipe target: instead of maintaining a partially implemented queue of expiring orders, the environment keeps one bit-encoded active recipe and can choose a new one after a successful delivery.</p>
+  <div class="meta">Explains <span class="mono">overcooked-order-queues</span> against <span class="mono">origin/main</span> · inspected at <span class="mono">8546fe9</span> · 15 files, +331/−200</div>
+  <nav class="toc" aria-label="Table of contents"><div class="eyebrow">Contents</div><ol><li><a href="#background">Background</a></li><li><a href="#intuition">Intuition</a></li><li><a href="#code">Code</a></li><li><a href="#quiz">Quiz</a></li></ol></nav>
+
+  <section id="background">
+    <h2>1. Background</h2>
+    <p>In Overcooked V3, a <em>recipe</em> is the soup agents are currently supposed to deliver. A layout supplies <code>possible_recipes</code>, such as three onions <code>[0, 0, 0]</code> or three tomatoes <code>[1, 1, 1]</code>. At runtime, the chosen recipe is compressed into an integer bit pattern and stored in <code>state.recipe</code>.</p>
+    <div class="callout"><div class="callout-label">Mental model</div><strong>The layout is the menu; <code>state.recipe</code> is today’s order.</strong> The menu is static configuration. The active order is dynamic episode state and is what delivery checks and observations read.</div>
+    <h3>The prior mismatch</h3>
+    <p><code>main</code> contains an optional order-queue subsystem: fixed arrays for order types, expirations, and active slots; per-step generation; expiry penalties; and a separate PRNG split. But the actual cooking and delivery path still compares a delivered soup with the single <code>state.recipe</code>. That leaves two competing concepts of “the target.”</p>
+    <div class="compare" aria-label="Comparison of old and new target models">
+      <div><h4>Before: queue machinery</h4><ul><li>May generate queue entries each step</li><li>Counts down expiry timers</li><li>Penalizes expired entries</li><li>Delivery still uses <code>state.recipe</code></li></ul></div>
+      <div><h4>PR #20: active recipe</h4><ul><li>Samples from the layout menu</li><li>Uses optional explicit probabilities</li><li>Resamples only after correct delivery</li><li>One value drives checks and observations</li></ul></div>
+    </div>
+    <p>The PR therefore does two related jobs: it adds random active-recipe sampling, and it removes the live order-queue pipeline. Legacy queue arrays remain in <code>State</code> as inert, fixed-size fields—preserving the state shape while deleting behavior.</p>
+  </section>
+
+  <section id="intuition">
+    <h2>2. Intuition</h2>
+    <p>Suppose the layout offers two recipes in this exact order:</p>
+    <table><thead><tr><th>Index</th><th>Recipe</th><th>Meaning</th><th>Probability</th></tr></thead><tbody><tr><td>0</td><td><code>[0, 0, 0]</code></td><td>Three onions</td><td>0.7</td></tr><tr><td>1</td><td><code>[1, 1, 1]</code></td><td>Three tomatoes</td><td>0.3</td></tr></tbody></table>
+    <p>With <code>recipe_probs=[0.7, 0.3]</code>, reset samples an index from that distribution and encodes the corresponding list. If probabilities are omitted, the sampling is uniform. The probability list is positional: swapping the layout recipes without swapping the probabilities changes the meaning.</p>
+    <pre><code>env = OvercookedV3(
+    layout="random_recipe_demo",
+    enable_random_recipe=True,
+    recipe_probs=[0.7, 0.3],
+)</code></pre>
+    <div class="flow" role="img" aria-label="A correct delivery triggers recipe sampling and updated observations">
+      <div class="node"><h4>Interaction</h4><strong>Deliver soup</strong>Compare inventory with current <code>state.recipe</code></div><div class="arrow" aria-hidden="true">→</div>
+      <div class="node"><h4>Signal</h4><strong>Correct delivery</strong>Aggregate across agents in the interaction scan</div><div class="arrow" aria-hidden="true">→</div>
+      <div class="node"><h4>Transition</h4><strong>Sample next recipe</strong>Only if random recipes are enabled</div><div class="arrow" aria-hidden="true">→</div>
+      <div class="node"><h4>Observable result</h4><strong>New target</strong>State and recipe-indicator channels agree</div>
+    </div>
+    <p class="caption">The resampling happens in the same environment step as the successful delivery, before the returned observation is built.</p>
+    <div class="callout warn"><div class="callout-label">Important distinction</div><code>recipe_probs</code> controls reset sampling even when <code>enable_random_recipe=False</code>. The boolean gates <em>post-delivery resampling</em>; it does not force a fixed reset recipe.</div>
+  </section>
+
+  <section id="code">
+    <h2>3. Code</h2>
+    <h3>A. Public configuration validates the distribution</h3>
+    <p>The constructor adds <code>enable_random_recipe</code> and <code>recipe_probs</code> at <code>overcooked.py:86–88</code>. Validation at <code>overcooked.py:481–516</code> rejects non-numeric, non-1D, wrong-length, non-finite, negative, or non-normalized inputs before converting them to a JAX array.</p>
+    <pre><code># Conceptual contract
+len(recipe_probs) == len(layout.possible_recipes)
+all(isfinite(p) and p &gt;= 0 for p in recipe_probs)
+sum(recipe_probs) ≈ 1.0</code></pre>
+    <p>This is constructor-time Python validation, which is appropriate because configuration errors should fail early rather than surface inside a JIT-compiled step.</p>
+
+    <h3>B. One helper owns recipe selection</h3>
+    <p><code>initialization.py:15–24</code> centralizes selection in <code>sample_recipe</code>. It uses <code>jax.random.randint</code> for uniform selection or <code>jax.random.choice(..., p=recipe_probs)</code> for weighted selection, then calls <code>DynamicObject.get_recipe_encoding</code>.</p>
+    <pre><code>recipe_idx = uniform_index(key) if probs is None else weighted_index(key, probs)
+recipe = possible_recipes[recipe_idx]
+return encode_recipe(recipe)</code></pre>
+
+    <h3>C. Reset always chooses an active recipe</h3>
+    <p><code>reset.py:63–64</code> splits the reset key and calls the helper. This means multiple-recipe layouts can vary at episode start regardless of whether between-delivery switching is enabled. The encoded result enters <code>State</code> at <code>reset.py:105</code>.</p>
+
+    <h3>D. The delivery step conditionally changes the target</h3>
+    <p>Agent interactions run through a JAX <code>lax.scan</code>. Each interaction reports whether it produced a correct delivery; the scan ORs those flags together (<code>agent_step.py:279–282</code>). After interactions and pot updates, lines 320–335 use <code>lax.cond</code>:</p>
+    <pre><code>sample_new_recipe = new_correct_delivery &amp; config.enable_random_recipe
+new_recipe = lax.cond(
+    sample_new_recipe,
+    lambda key: sample_recipe(key, config),
+    lambda _: state.recipe,
+    recipe_key,
+)</code></pre>
+    <p>The replacement state carries both <code>recipe=new_recipe</code> and <code>new_correct_delivery</code>. Because the normal step pipeline builds observations afterward, the recipe-indicator encoding reflects the newly sampled target immediately.</p>
+
+    <h3>E. Queue behavior is deliberately removed</h3>
+    <p>The PR deletes <code>systems/orders.py</code>, removes queue configuration and the per-step queue call, and stops splitting each step key into agent and order keys. The three queue arrays remain zeroed using <code>DEFAULT_MAX_ORDERS</code> and are documented as legacy inert fields.</p>
+    <table><thead><tr><th>Surface</th><th>Change</th><th>Consequence</th></tr></thead><tbody>
+      <tr><td><code>step.py</code></td><td>Queue advancement removed</td><td>No generated orders or expiry penalties</td></tr>
+      <tr><td><code>systems/orders.py</code></td><td>Deleted</td><td>No second target mechanism</td></tr>
+      <tr><td><code>State</code></td><td>Arrays retained, inert</td><td>Static tree shape remains compatible</td></tr>
+      <tr><td>Demo/config</td><td>Add random-recipe example</td><td>Feature is manually observable and trainable</td></tr>
+    </tbody></table>
+
+    <h3>F. Tests target contracts and end-to-end visibility</h3>
+    <p><code>tests/overcooked_v3/test_overcooked_v3.py:202–343</code> covers invalid probability vectors, deterministic distributions such as <code>[0.0, 1.0]</code>, reset selection, successful delivery, reward, the delivery flag, recipe replacement, and the returned recipe-indicator observation channel.</p>
+    <div class="callout warn"><div class="callout-label">Current integration status</div><span class="status">PR #20 is not merge-ready against today’s <code>main</code>.</span> GitHub reports a dirty merge state, and <code>main</code> has substantially evolved since the branch merge point. The focused tests could not be meaningfully executed from the copied worktree environment because its virtualenv/pytest path setup resolves the base checkout during collection; source inspection and a direct import confirmed the branch constructor itself has the new arguments. Rebase/conflict resolution and a clean-environment test run are still required.</div>
+    <h3>Trade-offs and edge cases</h3>
+    <ul>
+      <li>A sampled next recipe may equal the previous one; “resample” does not guarantee a change.</li>
+      <li>Correct-delivery events from multiple agents in the same step collapse to one boolean, so at most one new recipe is sampled per step.</li>
+      <li>Probability order is coupled to <code>layout.possible_recipes</code>; it is not keyed by recipe value.</li>
+      <li>Keeping inert queue arrays avoids immediate structural churn, but leaves cleanup debt and potentially confusing fields.</li>
+      <li>The PR’s removal of queue APIs is a behavioral/API break for callers that enabled or invoked that subsystem.</li>
+    </ul>
+  </section>
+
+  <section id="quiz" class="quiz">
+    <h2>4. Quiz</h2>
+    <p>Choose one answer for each question. Feedback appears immediately.</p>
+    <div id="quiz-root"></div>
+  </section>
+  <p class="footnote">Scope assumption: “<span class="mono">..main</span>” was interpreted as explaining the PR #20 head branch relative to current <span class="mono">origin/main</span>, using the three-dot merge-base diff that GitHub uses for PR changes.</p>
+</main>
+<script>
+(() => {
+  'use strict';
+  const questions = [
+    {q:'What does enable_random_recipe actually gate?', options:['Whether reset chooses from possible_recipes','Whether a correct delivery triggers another sample','Whether recipe probabilities are validated','Whether recipes are bit-encoded'], correct:1, why:'It gates post-delivery resampling. Reset still calls sample_recipe, and validation/encoding are independent of this flag.'},
+    {q:'Why keep the three order-queue arrays after deleting queue processing?', options:['They store the recipe probability vector','They preserve inert fixed-shape state fields','They cache the last three deliveries','They drive recipe-indicator observations'], correct:1, order:[2,0,3,1], why:'They remain as zeroed, inert arrays, preserving the JAX state tree shape while queue behavior is removed.'},
+    {q:'When does the returned observation show a newly sampled recipe?', options:['In the same step as the correct delivery','At the next environment reset only','One step after the delivery reward','When an order timer reaches zero'], correct:0, why:'The recipe is replaced during the action phase, and observations are built later in that same step.'},
+    {q:'What happens with recipe_probs=[0.7, 0.3]?', options:['Each ingredient is sampled independently at 70/30','The first two active queue slots receive those weights','Recipe indices 0 and 1 receive those probabilities','The recipe changes after exactly 70 and 30 steps'], correct:2, why:'The values are a positional distribution over layout.possible_recipes, not ingredient-level or time-based parameters.'},
+    {q:'Two agents deliver correctly during one scanned action phase. How many new recipes can this code sample?', options:['Two, because each interaction samples independently','One, because delivery flags are OR-reduced','Zero, because simultaneous deliveries cancel','Three, because queue slots are retained'], correct:1, why:'The scan aggregates deliveries into one boolean and the single lax.cond runs once after the scan.'}
+  ];
+  const root = document.getElementById('quiz-root');
+  questions.forEach((item, qi) => {
+    const card = document.createElement('article'); card.className='quiz-card';
+    const h = document.createElement('h3'); h.textContent=(qi+1)+'. '+item.q; card.appendChild(h);
+    const box=document.createElement('div'); box.className='options';
+    const order=item.order || item.options.map((_,i)=>i);
+    order.forEach((originalIndex) => {
+      const b=document.createElement('button'); b.type='button'; b.className='option'; b.textContent=item.options[originalIndex];
+      b.addEventListener('click', () => {
+        box.querySelectorAll('button').forEach(x=>{x.classList.remove('selected','correct','incorrect');x.removeAttribute('aria-current')});
+        const ok=originalIndex===item.correct; b.classList.add('selected',ok?'correct':'incorrect'); b.setAttribute('aria-current','true');
+        feedback.className='feedback show '+(ok?'good':'bad'); feedback.textContent=(ok?'Correct. ':'Not quite. ')+item.why;
+      }); box.appendChild(b);
+    });
+    const feedback=document.createElement('div'); feedback.className='feedback'; feedback.setAttribute('aria-live','polite');
+    card.appendChild(box); card.appendChild(feedback); root.appendChild(card);
+  });
+})();
+</script>
+</body></html>
