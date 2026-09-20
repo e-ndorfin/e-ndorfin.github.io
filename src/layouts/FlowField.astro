@@ -50,7 +50,7 @@
   const PARTICLE_COUNT = 150; // Not too crowded
   const NOISE_SCALE = 0.005;
   const SPEED = 0.5;
-  const COLOR = '34, 197, 94'; // Theme green
+  const COLOR = '21, 128, 61'; // Theme green
 
   function resize() {
     canvas.width = window.innerWidth;
@@ -81,7 +81,7 @@
     if (!ctx) return;
     
     // Fade out effect for trails
-    ctx.fillStyle = 'rgba(17, 17, 17, 0.1)'; // Theme bg with opacity for trail fade
+    ctx.fillStyle = 'rgba(250, 250, 249, 0.1)'; // Theme bg with opacity for trail fade
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     zOff += 0.002; // Slowly evolve the field

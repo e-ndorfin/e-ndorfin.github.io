@@ -1,6 +1,6 @@
 ---
 title: 'Identity Matrix'
-description: '🏆 <span class="font-bold text-white">1st Place Winner at UofTHacks 13</span> - Real-time multiplayer simulation where AI avatars continue acting as autonomous agents after users log off, mimicking their personality, communication style, and memories.<br><br>Technologies: React, Vite, FastAPI, Phaser, Supabase'
+description: '🏆 <span class="font-bold text-theme-accent">1st Place Winner at UofTHacks 13 ($2000 USD)</span> - Real-time multiplayer simulation where AI avatars continue acting as autonomous agents after users log off, mimicking their personality, communication style, and memories.<br><br>Inspired by <a href="https://arxiv.org/abs/2304.03442" target="_blank" rel="noopener noreferrer">Park et al., 2023.</a><br><br>Technologies: React, Vite, FastAPI, Phaser, Supabase'
 pubDate: '2026-01-25'
 link: 'https://devpost.com/software/temp-sqyptg'
 github: 'https://github.com/qiuethan/Identity-Matrix'

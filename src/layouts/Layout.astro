@@ -2,7 +2,6 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import FlowField from './FlowField.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 interface Props {
@@ -15,7 +14,7 @@ interface Props {
 const {
     title = SITE_TITLE,
     description = SITE_DESCRIPTION,
-    class: className = "max-w-2xl",
+    class: className = "max-w-4xl",
     structuredData,
 } = Astro.props;
 ---
@@ -31,14 +30,13 @@ const {
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
 	</head>
 	<body class="w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col min-h-screen">
-        <FlowField />
-        <div class="w-full max-w-2xl mx-auto">
+        <div class="w-full max-w-4xl mx-auto">
             <Header />
         </div>
         <main class={`flex-grow w-full ${className} mx-auto`}>
 		    <slot />
         </main>
-        <div class="w-full max-w-2xl mx-auto">
+        <div class="w-full max-w-4xl mx-auto">
             <Footer />
         </div>
 		<!-- Cloudflare Web Analytics -->

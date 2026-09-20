@@ -102,9 +102,10 @@ images:                      # optional, array of images
 
 ## Design System
 
-- **Background:** `#111111` (theme-bg)
-- **Text:** `#ededed` (theme-text)
-- **Accent:** `#22c55e` green (theme-accent)
+- **Background:** `#F6EBDD` (theme-bg; faint warm peach-beige)
+- **Text:** `#432818` (theme-text)
+- **Accent:** `#6F1D1B` burgundy (theme-accent)
+- **Supporting colors:** `#BB9457` (theme-gold), `#99582A` (theme-brown)
 - **Font:** Atkinson (preloaded woff from `/public/fonts/`)
 - **Layout:** `max-w-2xl` for main content, `max-w-4xl` for blog posts
 

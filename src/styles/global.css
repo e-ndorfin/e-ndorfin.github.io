@@ -3,19 +3,33 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    color-scheme: light;
+  }
+
   body {
     @apply bg-theme-bg text-theme-text antialiased;
   }
 
   /* Minimalist Link Styling */
   a {
-    @apply text-theme-text decoration-theme-accent/50 underline-offset-4 hover:text-theme-accent hover:decoration-theme-accent transition-colors duration-200;
+    @apply text-theme-text decoration-theme-accent/50 underline-offset-4 hover:text-theme-gold hover:decoration-theme-gold transition-colors duration-200;
+    color: #6F1D1B !important;
     text-decoration-line: underline;
     text-decoration-thickness: 1px;
   }
 
+  a:hover {
+    color: #BB9457 !important;
+    text-decoration-color: #BB9457;
+  }
+
+  strong {
+    color: #6F1D1B;
+  }
+
   /* Headers */
   h1, h2, h3, h4, h5, h6 {
-    @apply text-white font-bold tracking-tight;
+    @apply text-theme-text font-bold tracking-tight;
   }
 }

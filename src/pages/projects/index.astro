@@ -8,8 +8,9 @@ projects.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
 <Layout title="Projects">
-  <h1 class="text-3xl font-bold text-white mb-8">Projects</h1>
-  <div class="grid gap-6">
+  <section class="mt-8">
+    <h1 class="text-3xl font-bold text-theme-text mb-8">Projects</h1>
+    <div class="grid gap-6">
     {projects.map((project) => (
       <div class="group py-4">
         <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-2">
@@ -18,10 +19,10 @@ projects.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
             </h2>
              {/* Optional: Display date or tags here if needed */}
         </div>
-        <p class="text-gray-400 leading-relaxed max-w-xl" set:html={project.data.description} />
+        <p class="text-gray-600 leading-relaxed w-full" set:html={project.data.description} />
         {project.data.images && project.data.images.length > 0 && (
           <div class="relative mt-4 slideshow-container">
-            <div class="relative overflow-hidden rounded-lg border border-gray-700/50 shadow-lg aspect-video bg-gray-900">
+            <div class="relative overflow-hidden rounded-lg border border-gray-200 shadow-lg aspect-video bg-gray-100">
               {project.data.images.map((img, index) => (
                 <div
                   class={`slide ${index === 0 ? 'block' : 'hidden'}`}
@@ -47,7 +48,7 @@ projects.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
                       class={`w-2 h-2 rounded-full transition-colors ${
                         index === 0
                           ? 'bg-theme-accent'
-                          : 'bg-gray-600 hover:bg-gray-500'
+                          : 'bg-gray-300 hover:bg-gray-400'
                       }`}
                       data-slide-dot={index}
                       aria-label={`Go to slide ${index + 1}`}
@@ -57,7 +58,7 @@ projects.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
                 {/* Arrow navigation */}
                 <button
-                  class={`absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors ${project.data.images.length === 1 ? 'hidden' : 'block'}`}
+                  class={`absolute left-2 top-1/2 -translate-y-1/2 bg-theme-bg/90 hover:bg-theme-gold text-theme-accent p-2 rounded-full transition-colors ${project.data.images.length === 1 ? 'hidden' : 'block'}`}
                   data-slide-prev
                   aria-label="Previous slide"
                 >
@@ -66,7 +67,7 @@ projects.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
                   </svg>
                 </button>
                 <button
-                  class={`absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors ${project.data.images.length === 1 ? 'hidden' : 'block'}`}
+                  class={`absolute right-2 top-1/2 -translate-y-1/2 bg-theme-bg/90 hover:bg-theme-gold text-theme-accent p-2 rounded-full transition-colors ${project.data.images.length === 1 ? 'hidden' : 'block'}`}
                   data-slide-next
                   aria-label="Next slide"
                 >
@@ -92,7 +93,8 @@ projects.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
         </div>
       </div>
     ))}
-  </div>
+    </div>
+  </section>
 </Layout>
 
 <script>
@@ -142,8 +144,8 @@ function initSlideshows() {
 
       dots.forEach((dot, i) => {
         dot.classList.toggle('bg-theme-accent', i === index);
-        dot.classList.toggle('bg-gray-600', i !== index);
-        dot.classList.toggle('hover:bg-gray-500', i !== index);
+        dot.classList.toggle('bg-gray-300', i !== index);
+        dot.classList.toggle('hover:bg-gray-400', i !== index);
       });
 
       currentIndex = index;

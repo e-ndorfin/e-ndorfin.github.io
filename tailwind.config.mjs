@@ -4,9 +4,11 @@ export default {
 	theme: {
 		extend: {
 			colors: {
-				'theme-bg': '#111111',
-				'theme-text': '#ededed',
-				'theme-accent': '#22c55e',
+				'theme-bg': '#F6EBDD',
+				'theme-text': '#432818',
+				'theme-accent': '#6F1D1B',
+				'theme-gold': '#BB9457',
+				'theme-brown': '#99582A',
 			},
 		},
 	},
