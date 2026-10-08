@@ -4,6 +4,7 @@ import { getCollection } from 'astro:content';
 import FormattedDate from '../components/FormattedDate.astro';
 import { Image } from 'astro:assets';
 import profileImage from '../assets/profile.jpg';
+import SelectedWork from '../components/SelectedWork.astro';
 
 const homepageTitle = 'Zachary Tang';
 const homepageDescription = 'Zachary Tang is a roboticist and University of Toronto undergraduate researching general physical intelligence, VLAs, multi-agent RL, and robotics.';
@@ -100,6 +101,8 @@ const posts = (await getCollection('blog'))
 				</a>
 			</article>
 		</section>
+
+		<SelectedWork />
 
 		<section class="border-t border-theme-brown/30 pt-8">
 			<h2 class="text-xl font-semibold text-theme-text mb-4">Recent Rabbitholes</h2>

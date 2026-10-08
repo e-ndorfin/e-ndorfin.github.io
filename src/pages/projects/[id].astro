@@ -1,0 +1,162 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import { selectedWorkProjects, type SelectedWorkProject } from '../../data/selected-work';
+
+export function getStaticPaths() {
+	return selectedWorkProjects.map((project) => ({
+		params: { id: project.id },
+		props: { project },
+	}));
+}
+
+interface Props {
+	project: SelectedWorkProject;
+}
+
+const { project } = Astro.props;
+const initialMedia = project.media[0];
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`${project.title} — Zachary Tang`} description={project.thesis} />
+	</head>
+	<body class="project-case-page">
+		<header class="case-header">
+			<div class="case-header-inner">
+				<a href="/#projects" class="case-back">Back to projects ←</a>
+			</div>
+		</header>
+
+		<main class="case-main">
+			<article>
+				<header class="case-intro">
+					<p class="case-kicker">{project.category} · {project.meta}</p>
+					<h1>{project.title}</h1>
+					<p class="case-thesis">{project.thesis}</p>
+				</header>
+
+				<section class="case-visual" aria-label={`${project.title} media`}>
+					<div class="case-stage" id="case-stage">
+						{initialMedia.type === 'video' ? (
+							<video src={initialMedia.src} poster={initialMedia.poster} controls muted loop playsinline preload="metadata"></video>
+						) : (
+							<img src={initialMedia.src} alt={`${project.title} — ${initialMedia.label}`} />
+						)}
+					</div>
+					{project.media.length > 1 && (
+						<div class="case-media-tabs" id="case-media-tabs" role="tablist" aria-label="Project media">
+							{project.media.map((media, index) => (
+								<button type="button" role="tab" aria-selected={index === 0 ? 'true' : 'false'} data-media-index={index}>
+									{String(index + 1).padStart(2, '0')} {media.label}
+								</button>
+							))}
+						</div>
+					)}
+				</section>
+
+				<div class="case-narrative">
+					<div class="case-story">
+						<section>
+							<h2>What I worked on</h2>
+							<ul>
+								{project.contributions.map((contribution) => <li>{contribution}</li>)}
+							</ul>
+						</section>
+					</div>
+
+					<aside class="case-facts" aria-label="Project details">
+						<dl>
+							<div><dt>Type</dt><dd>{project.category}</dd></div>
+							<div><dt>Context</dt><dd>{project.meta}</dd></div>
+						</dl>
+						{project.links.length > 0 && (
+							<nav aria-label="Project links">
+								{project.links.map((link) => <a href={link.href} target="_blank" rel="noopener noreferrer">{link.label}</a>)}
+							</nav>
+						)}
+					</aside>
+				</div>
+			</article>
+		</main>
+
+		<script type="application/json" id="case-media-data" set:html={JSON.stringify(project.media)} />
+	</body>
+</html>
+
+<style is:global>
+	.project-case-page { min-height:100vh; margin:0; background:#F6EBDD; color:#432818; }
+	.case-header { position:sticky; z-index:10; top:0; height:56px; border-bottom:1px solid rgba(153,88,42,.3); background:rgba(246,235,221,.96); backdrop-filter:blur(10px); }
+	.case-header-inner { width:100%; max-width:896px; height:100%; margin:0 auto; padding:0 1.5rem; display:flex; align-items:center; justify-content:flex-end; }
+	.case-header .case-back { font-size:.84rem; white-space:nowrap; }
+	.case-main { width:100%; max-width:896px; margin:0 auto; padding:3rem 1.5rem 5rem; }
+	.case-intro { max-width:650px; }
+	.case-kicker { margin:0; color:#99582A; font-size:.72rem; font-weight:700; letter-spacing:.11em; text-transform:uppercase; }
+	.case-intro h1 { margin:.5rem 0 .9rem; color:#6F1D1B; font-size:clamp(2rem,5vw,3.25rem); line-height:1.02; letter-spacing:-.035em; }
+	.case-thesis { margin:0; color:#5f514a; font-size:1.12rem; line-height:1.5; max-width:60ch; }
+	.case-visual { margin-top:1.75rem; }
+	.case-stage { width:100%; aspect-ratio:2/1; display:flex; align-items:center; justify-content:center; overflow:hidden; border:1px solid rgba(153,88,42,.28); border-radius:.25rem; background:#171310; }
+	.case-stage img,
+	.case-stage video { display:block; width:100%; height:100%; object-fit:contain; }
+	.case-media-tabs { display:flex; gap:.4rem; overflow-x:auto; padding:.65rem 0; border-bottom:1px solid rgba(153,88,42,.25); }
+	.case-media-tabs button { flex:none; padding:.4rem .6rem; border:1px solid rgba(153,88,42,.3); border-radius:.2rem; color:#6F1D1B; font-size:.7rem; }
+	.case-media-tabs button[aria-selected="true"] { color:#F6EBDD; border-color:#6F1D1B; background:#6F1D1B; }
+	.case-media-tabs button:focus-visible { outline:2px solid #BB9457; outline-offset:2px; }
+	.case-narrative { display:grid; grid-template-columns:minmax(0,1fr) 230px; gap:3rem; margin-top:2.75rem; }
+	.case-story { max-width:560px; }
+	.case-story h2 { margin:0 0 .65rem; color:#6F1D1B; font-size:.76rem; letter-spacing:.1em; text-transform:uppercase; }
+	.case-story li { color:#6b5c54; line-height:1.65; }
+	.case-story ul { list-style:disc; margin:0; padding-left:1.15rem; }
+	.case-facts { align-self:start; padding-left:1.25rem; border-left:1px solid rgba(153,88,42,.3); }
+	.case-facts dl { margin:0; }
+	.case-facts dl > div + div { margin-top:1rem; }
+	.case-facts dt { color:#99582A; font-size:.68rem; font-weight:700; letter-spacing:.09em; text-transform:uppercase; }
+	.case-facts dd { margin:.2rem 0 0; color:#6b5c54; font-size:.88rem; line-height:1.4; }
+	.case-facts nav { display:flex; flex-direction:column; align-items:flex-start; gap:.55rem; margin-top:1.5rem; padding-top:1rem; border-top:1px solid rgba(153,88,42,.25); }
+	.case-facts nav a { font-size:.84rem; }
+
+	@media (max-width: 767px) {
+		.case-header-inner { padding:0 1rem; }
+		.case-main { padding:2rem 1rem 3.5rem; }
+		.case-intro h1 { font-size:2rem; }
+		.case-thesis { font-size:1rem; }
+		.case-stage { aspect-ratio:16/10; }
+		.case-narrative { grid-template-columns:1fr; gap:2rem; margin-top:2rem; }
+		.case-facts { padding:1.25rem 0 0; border-left:0; border-top:1px solid rgba(153,88,42,.3); }
+	}
+</style>
+
+<script>
+	type MediaItem = { label: string; type: 'image' | 'video'; src: string; poster?: string };
+	const dataNode = document.querySelector<HTMLScriptElement>('#case-media-data');
+	const media: MediaItem[] = dataNode ? JSON.parse(dataNode.textContent || '[]') : [];
+	const stage = document.querySelector<HTMLElement>('#case-stage');
+	const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-media-index]'));
+
+	function showMedia(index: number) {
+		const item = media[index];
+		if (!item || !stage) return;
+		stage.querySelectorAll('video').forEach((video) => video.pause());
+		stage.replaceChildren();
+		if (item.type === 'video') {
+			const video = document.createElement('video');
+			video.src = item.src;
+			video.controls = true;
+			video.muted = true;
+			video.loop = true;
+			video.playsInline = true;
+			video.preload = 'metadata';
+			if (item.poster) video.poster = item.poster;
+			stage.append(video);
+		} else {
+			const image = document.createElement('img');
+			image.src = item.src;
+			image.alt = item.label;
+			stage.append(image);
+		}
+		tabs.forEach((tab) => tab.setAttribute('aria-selected', String(Number(tab.dataset.mediaIndex) === index)));
+	}
+
+	tabs.forEach((tab) => tab.addEventListener('click', () => showMedia(Number(tab.dataset.mediaIndex))));
+</script>

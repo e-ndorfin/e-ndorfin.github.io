@@ -1,0 +1,140 @@
+---
+import { selectedWorkProjects } from '../data/selected-work';
+---
+
+<section id="projects" class="selected-work border-t border-theme-brown/30 pt-8" aria-labelledby="projects-title">
+	<div class="work-heading">
+		<h2 id="projects-title" class="text-xl font-semibold text-theme-text">Projects</h2>
+		<p>Research and selected builds</p>
+	</div>
+
+	<div class="work-grid">
+		{selectedWorkProjects.map((project) => (
+			<article class="work-card">
+				<a class="work-link" href={`/projects/${project.id}/`} aria-label={`View ${project.title}`}>
+					<span class="work-media">
+						<img src={project.image} alt="" loading="lazy" width="968" height="480" />
+					</span>
+					<span class="work-caption">
+						<span class="work-meta"><span>{project.category}</span><span>{project.meta}</span></span>
+						<strong class="work-title">{project.title}</strong>
+						<span class="work-description">{project.description}</span>
+					</span>
+				</a>
+			</article>
+		))}
+	</div>
+</section>
+
+<style>
+	.work-heading {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-bottom: 1.25rem;
+	}
+
+	.work-heading p {
+		color: #6b7280;
+		font-size: 0.8125rem;
+	}
+
+	.work-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 2rem 1.5rem;
+	}
+
+	.work-link {
+		display: block;
+		color: inherit !important;
+		text-decoration: none;
+	}
+
+	.work-link:focus-visible {
+		outline: 2px solid #BB9457;
+		outline-offset: 4px;
+	}
+
+	.work-media {
+		display: block;
+		aspect-ratio: 2 / 1;
+		overflow: hidden;
+		border: 1px solid rgba(153, 88, 42, 0.25);
+		border-radius: 0.25rem;
+		background: #432818;
+		box-shadow: 0 1px 2px rgba(67, 40, 24, 0.08);
+		transition: border-color 0.2s ease;
+	}
+
+	.work-media img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.2s ease;
+	}
+
+	.work-link:hover .work-media {
+		border-color: #BB9457;
+	}
+
+	.work-link:hover .work-media img {
+		transform: scale(1.015);
+	}
+
+	.work-caption {
+		display: block;
+		padding-top: 0.65rem;
+	}
+
+	.work-meta {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		color: #7c675d;
+		font-size: 0.7rem;
+		line-height: 1.35;
+		letter-spacing: 0.035em;
+		text-transform: uppercase;
+	}
+
+	.work-meta span:last-child {
+		text-align: right;
+	}
+
+	.work-title {
+		display: block;
+		margin-top: 0.35rem;
+		color: #6F1D1B;
+		font-size: 1.125rem;
+		line-height: 1.2;
+	}
+
+	.work-description {
+		display: block;
+		margin-top: 0.25rem;
+		color: #6b7280;
+		font-size: 0.875rem;
+		line-height: 1.45;
+	}
+
+	@media (max-width: 767px) {
+		.work-heading p {
+			display: none;
+		}
+
+		.work-grid {
+			grid-template-columns: 1fr;
+			gap: 1.75rem;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.work-media,
+		.work-media img {
+			transition: none;
+		}
+	}
+</style>
